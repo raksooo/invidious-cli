@@ -1,2 +1,2 @@
-# invidious-cli
+# Invidious CLI
 Invidious CLI
