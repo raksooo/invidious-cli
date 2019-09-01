@@ -1,0 +1,2 @@
+# invidious-cli
+Invidious CLI
