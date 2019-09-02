@@ -1,4 +1,5 @@
 import program from 'commander';
+import run from './setup';
 
 program
   .version('0.0.1');
@@ -15,6 +16,6 @@ program
   .parse(process.argv);
 
 if (!process.argv.slice(2).length) {
-  console.log('b');
+  run();
 }
 
