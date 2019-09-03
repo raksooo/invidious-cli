@@ -1,8 +1,8 @@
 import React, { useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import { FetcherContext } from './Fetcher';
 import { VideoData } from '../helpers/fetchFeed';
-import {ConfigContext} from './App';
-import {Config, saveLast} from '../config';
+import {ConfigContext, ConfigUpdaterContext, ConfigUpdater} from './App';
+import {Config} from '../config';
 import {playVideos} from '../helpers/player';
 
 class FeedRow implements VideoData {
@@ -31,35 +31,30 @@ class FeedRow implements VideoData {
 }
 
 const Feed: React.FC = () => {
-  const { player, last: configLast } = useContext<Config>(ConfigContext);
+  const { player, last } = useContext<Config>(ConfigContext);
+  const { setLast } = useContext<ConfigUpdater>(ConfigUpdaterContext);
   const feed = useContext<VideoData[]>(FetcherContext);
   const items = useMemo<FeedRow[]>(() => feed.map(item => new FeedRow(item)), [feed]);
   const getRows = useCallback((items: FeedRow[]) => items.map(item => item.toString()), [items])
   const [rows, setRows] = useState<string[]>(() => getRows(items));
   const [index, setIndex] = useState<number>(0);
-  const [last, setLast] = useState<Date>(configLast);
 
   const updateSelection = useCallback(() => {
     items.forEach(item => { item.selected = item.date.getTime() > last.getTime(); });
     setRows(getRows(items));
   }, [items, last]);
 
-  const updateLast = useCallback(last => {
-    setLast(last);
-    saveLast(last);
-  }, [updateSelection]);
-
   const onSelectItem = useCallback((_, i) => setIndex(i), []);
 
   const onKey = useCallback(key => {
     const actions = {
       ' ': () => items[index].toggleSelection(),
-      'n': () => updateLast(new Date()),
+      'n': () => setLast(new Date()),
       'o': () => playVideos(player, [items[index]]),
       'p': () => {
         const selected = items.filter(item => item.selected);
         const dates = selected.map(item => item.date.getTime());
-        updateLast(new Date(Math.max(...dates)));
+        setLast(new Date(Math.max(...dates)));
         playVideos(player, selected);
       },
     };
@@ -77,7 +72,7 @@ const Feed: React.FC = () => {
       style={{ selected: { fg: 'green' }}}
       keys
       vi
-      focused/>
+      focused />
   );
 };
 
