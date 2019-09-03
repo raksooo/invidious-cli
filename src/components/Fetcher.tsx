@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import {VideoData} from '../helpers/fetchFeed';
 
 interface FetcherProps {
   fallback: JSX.Element | JSX.Element[];
@@ -6,7 +7,12 @@ interface FetcherProps {
   children: JSX.Element | JSX.Element[];
 }
 
-export const FetcherContext = React.createContext<any>(null);
+export interface FetcherContextValue {
+  feed: VideoData[];
+  refetch: () => void;
+}
+
+export const FetcherContext = React.createContext<FetcherContextValue>(null);
 
 const Fetcher: React.FC<FetcherProps> = (props) => {
   const {
@@ -17,12 +23,19 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
 
   const [data, setData] = useState(null);
 
-  useEffect(() => {
+  const fetchImpl = useCallback(() => {
     setData(null);
     fetch().then(data => {
       setData(data);
     });
-  }, [fetch]);
+  }, [fetch])
+
+  const value = useMemo(() => ({
+    feed: data,
+    refetch: fetchImpl
+  }), [data, fetchImpl]);
+
+  useEffect(() => fetchImpl, [fetchImpl]);
 
   if (data == null) {
     return (
@@ -33,7 +46,7 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
   }
 
   return (
-    <FetcherContext.Provider value={data}>
+    <FetcherContext.Provider value={value}>
       {children}
     </FetcherContext.Provider>
   );

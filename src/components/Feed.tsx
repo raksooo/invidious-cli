@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState, useCallback, useEffect } from 'react';
-import { FetcherContext } from './Fetcher';
+import { FetcherContext, FetcherContextValue } from './Fetcher';
 import { VideoData } from '../helpers/fetchFeed';
 import {ConfigContext, ConfigUpdaterContext, ConfigUpdater} from './App';
 import {Config} from '../config';
@@ -33,7 +33,7 @@ class FeedRow implements VideoData {
 const Feed: React.FC = () => {
   const { player, last } = useContext<Config>(ConfigContext);
   const { setLast } = useContext<ConfigUpdater>(ConfigUpdaterContext);
-  const feed = useContext<VideoData[]>(FetcherContext);
+  const { feed, refetch } = useContext<FetcherContextValue>(FetcherContext);
   const items = useMemo<FeedRow[]>(() => feed.map(item => new FeedRow(item)), [feed]);
   const getRows = useCallback((items: FeedRow[]) => items.map(item => item.toString()), [items])
   const [rows, setRows] = useState<string[]>(() => getRows(items));
@@ -48,8 +48,12 @@ const Feed: React.FC = () => {
 
   const onKey = useCallback(key => {
     const actions = {
-      ' ': () => items[index].toggleSelection(),
+      ' ': () => {
+        items[index].toggleSelection();
+        setRows(getRows(items));
+      },
       'n': () => setLast(new Date()),
+      'r': () => refetch(),
       'o': () => playVideos(player, [items[index]]),
       'p': () => {
         const selected = items.filter(item => item.selected);
@@ -59,7 +63,6 @@ const Feed: React.FC = () => {
       },
     };
     Object.keys(actions).includes(key) && actions[key]();
-    setRows(getRows(items));
   }, [index, items, setLast]);
 
   useEffect(() => { updateSelection(); }, [last, feed]);
