@@ -15,9 +15,9 @@ const CONFIG_KEY_FEED = "feed";
 const CONFIG_KEY_LAST = "last";
 
 export interface Config {
-	[CONFIG_KEY_PLAYER]?: string;
-	[CONFIG_KEY_FEED]?: string;
-	[CONFIG_KEY_LAST]?: Date;
+  [CONFIG_KEY_PLAYER]?: string;
+  [CONFIG_KEY_FEED]?: string;
+  [CONFIG_KEY_LAST]?: Date;
 }
 
 const ensureConfig: () => Promise<void> = async () => {
@@ -29,9 +29,14 @@ const ensureConfig: () => Promise<void> = async () => {
 };
 
 export const readConfig: () => Promise<Config> = async () => {
-	await ensureConfig();
-	const config = await readFileAsync(CONFIG_PATH);
-	return JSON.parse(config.toString());
+  await ensureConfig();
+  const config = await readFileAsync(CONFIG_PATH);
+  const json = JSON.parse(config.toString());
+  return {
+    [CONFIG_KEY_PLAYER]: json[CONFIG_KEY_PLAYER],
+    [CONFIG_KEY_FEED]: json[CONFIG_KEY_FEED],
+    [CONFIG_KEY_LAST]: new Date(json[CONFIG_KEY_LAST]),
+  };
 };
 
 const writeConfig = (config: Config) => {
@@ -41,8 +46,8 @@ const writeConfig = (config: Config) => {
 
 const editConfig = async (patch: Config) => {
   const config = await readConfig();
-	const newConfig = Object.assign(config, patch);
-	return await writeConfig(newConfig);
+  const newConfig = Object.assign(config, patch);
+  return await writeConfig(newConfig);
 };
 
 export const savePlayer = (player: string) => {
@@ -54,6 +59,6 @@ export const saveFeed = (url: string) => {
 };
 
 export const saveLast = (last: Date) => {
-	return editConfig({ [CONFIG_KEY_LAST]: last });
+  return editConfig({ [CONFIG_KEY_LAST]: last });
 };
 
