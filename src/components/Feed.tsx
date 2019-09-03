@@ -47,25 +47,29 @@ const Feed: React.FC = () => {
 
   const onSelectItem = useCallback((_, i) => setIndex(i), []);
 
+  const updateLast = useCallback(date => {
+    date.getTime() > last.getTime() && setLast(date);
+  }, [last, setLast]);
+
   const onKey = useCallback(key => {
     const actions = {
       ' ': () => {
         items[index].toggleSelection();
         setRows(getRows(items));
       },
-      'n': () => setLast(new Date()),
+      'n': () => updateLast(new Date()),
       'r': () => refetch(),
       'y': () => clipboardy.writeSync(items[index].link),
       'o': () => playVideos(player, [items[index]]),
       'p': () => {
         const selected = items.filter(item => item.selected);
         const dates = selected.map(item => item.date.getTime());
-        setLast(new Date(Math.max(...dates)));
+        updateLast(new Date(Math.max(...dates)));
         playVideos(player, selected);
       },
     };
     Object.keys(actions).includes(key) && actions[key]();
-  }, [index, items, setLast]);
+  }, [index, items, updateLast]);
 
   useEffect(() => { updateSelection(); }, [last, feed]);
 
