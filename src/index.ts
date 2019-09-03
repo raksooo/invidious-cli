@@ -24,7 +24,7 @@ program
 if (!setProvided) {
   readConfig()
     .then(config => {
-      config.player = program.player || config.player;
+      config.player = program.args[0] || config.player;
       run(config);
     });
 }
