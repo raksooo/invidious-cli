@@ -3,7 +3,7 @@ import { Config } from '../config';
 import Loading from './Loading';
 import Feed from './Feed';
 import Fetcher from './Fetcher';
-import {getFeed} from '../helpers/fetch';
+import {getFeed} from '../helpers/fetchFeed';
 
 interface AppProps {
   config: Config;

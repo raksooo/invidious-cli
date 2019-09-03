@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react';
 import { FetcherContext } from './Fetcher';
-import { VideoData } from '../helpers/fetch';
+import { VideoData } from '../helpers/fetchFeed';
 
 class FeedRow implements VideoData {
   public title: string;
