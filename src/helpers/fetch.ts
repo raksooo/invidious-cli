@@ -2,8 +2,10 @@ import https from 'https';
 import { parseStringPromise } from 'xml2js';
 
 export interface VideoData {
-  title: string[];
-  link: string[];
+  title: string;
+  link: string;
+  author: string;
+  date: Date;
 }
 
 export const fetch: (url: string) => Promise<string> = url => {
@@ -19,6 +21,15 @@ export const fetch: (url: string) => Promise<string> = url => {
 export const getFeed: (url: string) => Promise<VideoData[]> = async (url) => {
   const xml = await fetch(url);
   const json = await parseStringPromise(xml);
-  return json.feed.entry;
+  return formatFeedData(json);
 };
+
+const formatFeedData: (data: object) => VideoData[] = (data) => (
+  data.feed.entry.map(item => ({
+    title: item.title[0],
+    link: item.link[0]['$'].href,
+    author: item.author[0].name[0],
+    date: new Date(item.published[0]),
+  }))
+);
 
