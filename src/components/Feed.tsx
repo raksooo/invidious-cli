@@ -1,4 +1,5 @@
 import React, { useContext, useMemo, useState, useCallback, useEffect } from 'react';
+import clipboardy from 'clipboardy';
 import { FetcherContext, FetcherContextValue } from './Fetcher';
 import { VideoData } from '../helpers/fetchFeed';
 import {ConfigContext, ConfigUpdaterContext, ConfigUpdater} from './App';
@@ -54,6 +55,7 @@ const Feed: React.FC = () => {
       },
       'n': () => setLast(new Date()),
       'r': () => refetch(),
+      'y': () => clipboardy.writeSync(items[index].link),
       'o': () => playVideos(player, [items[index]]),
       'p': () => {
         const selected = items.filter(item => item.selected);
