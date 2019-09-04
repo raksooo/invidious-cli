@@ -8,7 +8,7 @@ interface FetcherProps {
 }
 
 export interface FetcherContextValue {
-  feed: VideoData[];
+  videos: VideoData[];
   refetch: () => void;
 }
 
@@ -31,7 +31,7 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
   }, [fetch])
 
   const value = useMemo(() => ({
-    feed: data,
+    videos: data,
     refetch: fetchImpl
   }), [data, fetchImpl]);
 

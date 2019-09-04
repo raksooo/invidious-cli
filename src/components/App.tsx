@@ -5,16 +5,15 @@ import Feed from './Feed';
 import Fetcher from './Fetcher';
 import {getFeed} from '../helpers/fetchFeed';
 
+export interface ConfigContextValue extends Config {
+  setLast: (date: Date) => void;
+}
+
 interface AppProps {
   config: Config;
 }
 
-export interface ConfigUpdater {
-  setLast: (date: Date) => void;
-}
-
-export const ConfigContext = React.createContext<Config>({});
-export const ConfigUpdaterContext = React.createContext<ConfigUpdater>({ setLast: _ => {} });
+export const ConfigContext = React.createContext<ConfigContextValue>(null);
 
 const App: React.FC<AppProps> = (props) => {
   const {
@@ -22,23 +21,23 @@ const App: React.FC<AppProps> = (props) => {
   } = props;
 
   const [config, setConfig] = useState<Config>(configProp);
-
-  const fetch = useCallback(() => getFeed(config.feed), [config.feed]);
-
   const setLast = useCallback(date => {
     saveLast(date);
     setConfig({ ...config, last: date });
   }, [config])
 
-  const configUpdater = useMemo<ConfigUpdater>(() => ({ setLast }), [setLast]);
+  const configContextValue = useMemo<ConfigContextValue>(() => ({
+    ...config,
+    setLast,
+  }), [config, setLast]);
+
+  const fetch = useCallback(() => getFeed(config.feed), [config.feed]);
 
   return (
-    <ConfigContext.Provider value={config}>
-      <ConfigUpdaterContext.Provider value={configUpdater}>
+    <ConfigContext.Provider value={configContextValue}>
         <Fetcher fetch={fetch} fallback={<Loading />}>
           <Feed />
         </Fetcher>
-      </ConfigUpdaterContext.Provider>
     </ConfigContext.Provider>
   )
 };

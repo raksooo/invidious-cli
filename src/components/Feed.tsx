@@ -1,83 +1,40 @@
-import React, { useContext, useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useContext, useState, useCallback, useEffect } from 'react';
 import clipboardy from 'clipboardy';
-import { FetcherContext, FetcherContextValue } from './Fetcher';
-import { VideoData } from '../helpers/fetchFeed';
-import {ConfigContext, ConfigUpdaterContext, ConfigUpdater} from './App';
-import {Config} from '../config';
+import { FetcherContext} from './Fetcher';
+import {ConfigContext} from './App';
 import {playVideos} from '../helpers/player';
-
-class FeedRow implements VideoData {
-  public title: string;
-  public link: string;
-  public author: string;
-  public date: Date;
-
-  public selected: boolean = false;
-
-  constructor(data: VideoData) {
-    this.title = data.title;
-    this.link = data.link;
-    this.author = data.author;
-    this.date = data.date;
-  }
-
-  public toggleSelection() {
-    this.selected = !this.selected;
-  }
-
-  public toString() {
-    const check = this.selected ? '✔' : ' ';
-    return ` ${check} ${this.author} - ${this.title}`;
-  }
-}
+import {FeedData} from '../models/FeedData';
 
 const Feed: React.FC = () => {
-  const { player, last } = useContext<Config>(ConfigContext);
-  const { setLast } = useContext<ConfigUpdater>(ConfigUpdaterContext);
-  const { feed, refetch } = useContext<FetcherContextValue>(FetcherContext);
-  const items = useMemo<FeedRow[]>(() => feed.map(item => new FeedRow(item)), [feed]);
-  const getRows = useCallback((items: FeedRow[]) => items.map(item => item.toString()), [items])
-  const [rows, setRows] = useState<string[]>(() => getRows(items));
-  const [index, setIndex] = useState<number>(0);
+  const { player, last, setLast } = useContext(ConfigContext);
+  const { videos, refetch } = useContext(FetcherContext);
+  const [feed, setFeed] = useState(() => FeedData.fromVideoData(videos));
 
-  const updateSelection = useCallback(() => {
-    items.forEach(item => { item.selected = item.date.getTime() > last.getTime(); });
-    setRows(getRows(items));
-  }, [items, last]);
-
-  const onSelectItem = useCallback((_, i) => setIndex(i), []);
-
-  const updateLast = useCallback(date => {
-    date.getTime() > last.getTime() && setLast(date);
-  }, [last, setLast]);
+  const onSelectItem = useCallback((_, i) => feed.setIndex(i), [feed]);
+  const updateLast = useCallback(date => date > last && setLast(date), [last, setLast]);
 
   const onKey = useCallback(key => {
     const actions = {
-      ' ': () => {
-        items[index].toggleSelection();
-        setRows(getRows(items));
-      },
+      ' ': () => setFeed(feed.select()),
       'n': () => updateLast(new Date()),
       'r': () => refetch(),
-      'y': () => clipboardy.writeSync(items[index].link),
-      'o': () => playVideos(player, [items[index]]),
+      'y': () => clipboardy.writeSync(feed.current.link),
+      'o': () => playVideos(player, [feed.current]),
       'p': () => {
-        const selected = items.filter(item => item.selected);
-        const dates = selected.map(item => item.date.getTime());
-        updateLast(new Date(Math.max(...dates)));
-        playVideos(player, selected);
+        updateLast(feed.lastDateOfSelected);
+        playVideos(player, feed.selected);
       },
     };
     Object.keys(actions).includes(key) && actions[key]();
-  }, [index, items, updateLast]);
+  }, [feed, updateLast]);
 
-  useEffect(() => { updateSelection(); }, [last, feed]);
+  useEffect(() => { setFeed(feed.selectMoreRecent(last)); }, [last]);
 
   return (
     <list
       onSelectItem={onSelectItem}
       onKeypress={onKey}
-      items={rows}
+      items={feed.strings}
       style={{ selected: { fg: 'green' }}}
       keys
       vi
