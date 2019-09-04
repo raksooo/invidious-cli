@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {VideoData} from '../helpers/fetchFeed';
 
 interface FetcherProps {
-  fallback: JSX.Element | JSX.Element[];
+  fallback: React.ReactElement;
+  children: React.ReactElement;
   fetch: () => Promise<any>;
-  children: JSX.Element | JSX.Element[];
 }
 
 export interface FetcherContextValue {
@@ -25,9 +25,7 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
 
   const fetchImpl = useCallback(() => {
     setData(null);
-    fetch().then(data => {
-      setData(data);
-    });
+    fetch().then(setData);
   }, [fetch])
 
   const value = useMemo(() => ({
@@ -38,11 +36,7 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
   useEffect(() => fetchImpl, [fetchImpl]);
 
   if (data == null) {
-    return (
-      <>
-        {fallback}
-      </>
-    );
+    return fallback;
   }
 
   return (

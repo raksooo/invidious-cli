@@ -23,8 +23,8 @@ const App: React.FC<AppProps> = (props) => {
   const [config, setConfig] = useState<Config>(configProp);
   const setLast = useCallback(date => {
     saveLast(date);
-    setConfig({ ...config, last: date });
-  }, [config])
+    setConfig(config => ({ ...config, last: date }));
+  }, [])
 
   const configContextValue = useMemo<ConfigContextValue>(() => ({
     ...config,
@@ -35,9 +35,9 @@ const App: React.FC<AppProps> = (props) => {
 
   return (
     <ConfigContext.Provider value={configContextValue}>
-        <Fetcher fetch={fetch} fallback={<Loading />}>
-          <Feed />
-        </Fetcher>
+      <Fetcher fetch={fetch} fallback={<Loading />}>
+        <Feed />
+      </Fetcher>
     </ConfigContext.Provider>
   )
 };
