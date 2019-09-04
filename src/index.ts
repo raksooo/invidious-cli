@@ -11,11 +11,11 @@ program
 program
   .command('set <option> <value>')
   .usage('set player <command>')
-  .usage('set subscription <url>')
+  .usage('set feed <url>')
   .action((option, value) => {
     setProvided = true;
     option == 'player' && savePlayer(value);
-    option == 'subscription' && saveFeed(value);
+    option == 'feed' && saveFeed(value);
   });
 
 program
