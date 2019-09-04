@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 const generateLoadingText = (elapsedSeconds: number) => {
   const maxDots = 3;
@@ -16,10 +16,7 @@ const Loading: React.FC = () => {
   const loadingText = generateLoadingText(seconds);
 
   useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setSeconds(seconds => seconds + 1);
-    }, 1000);
-
+    timerRef.current = setInterval(() => setSeconds(seconds => seconds + 1), 1000);
     return () => clearInterval(timerRef.current);
   });
 

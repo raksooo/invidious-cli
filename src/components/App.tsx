@@ -1,9 +1,9 @@
-import React, {useCallback, useState, useMemo} from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { Config, saveLast } from '../config';
 import Loading from './Loading';
 import Feed from './Feed';
 import Fetcher from './Fetcher';
-import {getFeed} from '../helpers/fetchFeed';
+import { getFeed } from '../helpers/fetchFeed';
 
 export interface ConfigContextValue extends Config {
   setLast: (date: Date) => void;

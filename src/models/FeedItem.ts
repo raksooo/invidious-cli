@@ -1,4 +1,4 @@
-import {VideoData} from '../helpers/fetchFeed';
+import { VideoData } from '../helpers/fetchFeed';
 
 export class FeedItem implements VideoData {
   private readonly data: VideoData;

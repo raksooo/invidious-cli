@@ -1,5 +1,5 @@
-import {FeedItem} from './FeedItem';
-import {VideoData} from '../helpers/fetchFeed';
+import { FeedItem } from './FeedItem';
+import { VideoData } from '../helpers/fetchFeed';
 
 export class FeedData {
   public readonly data: FeedItem[];

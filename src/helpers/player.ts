@@ -1,7 +1,7 @@
-import { spawn } from 'child_process';
-import {VideoData} from './fetchFeed';
+import { ChildProcess, spawn } from 'child_process';
+import { VideoData } from './fetchFeed';
 
-let playerProcess;
+let playerProcess: ChildProcess;
 
 export const playVideos = (player: string, videos: VideoData[]) => {
   const links = videos.map(video => video.link);

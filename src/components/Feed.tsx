@@ -10,25 +10,23 @@ const Feed: React.FC = () => {
   const { videos, refetch } = useContext(FetcherContext);
   const [feed, setFeed] = useState(() => FeedData.fromVideoData(videos));
 
+  const actions = {
+    ' ': () => setFeed(feed.select()),
+    'n': () => updateLast(new Date()),
+    'r': () => refetch(),
+    'y': () => clipboardy.writeSync(feed.current.link),
+    'o': () => playVideos(player, [feed.current]),
+    'p': () => {
+      updateLast(feed.lastDateOfSelected);
+      playVideos(player, feed.selected);
+    },
+  };
+
   const onSelectItem = useCallback((_, i) => feed.setIndex(i), [feed]);
   const updateLast = useCallback(date => date > last && setLast(date), [last, setLast]);
+  const onKey = useCallback(key => actions[key] && actions[key](), [feed, updateLast]);
 
-  const onKey = useCallback(key => {
-    const actions = {
-      ' ': () => setFeed(feed.select()),
-      'n': () => updateLast(new Date()),
-      'r': () => refetch(),
-      'y': () => clipboardy.writeSync(feed.current.link),
-      'o': () => playVideos(player, [feed.current]),
-      'p': () => {
-        updateLast(feed.lastDateOfSelected);
-        playVideos(player, feed.selected);
-      },
-    };
-    Object.keys(actions).includes(key) && actions[key]();
-  }, [feed, updateLast]);
-
-  useEffect(() => { setFeed(feed.selectMoreRecent(last)); }, [last]);
+  useEffect(() => { setFeed(feed => feed.selectMoreRecent(last)); }, [last]);
 
   return (
     <list

@@ -1,6 +1,6 @@
 import https from 'https';
 import { parseStringPromise } from 'xml2js';
-import {parseFeed} from './parseFeed';
+import { parseFeed } from './parseFeed';
 
 export interface VideoData {
   title: string;

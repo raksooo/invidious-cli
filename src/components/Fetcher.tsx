@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import {VideoData} from '../helpers/fetchFeed';
+import { VideoData } from '../helpers/fetchFeed';
 
 interface FetcherProps {
   fallback: React.ReactElement;

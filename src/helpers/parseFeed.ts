@@ -1,4 +1,4 @@
-import {VideoData} from './fetchFeed';
+import { VideoData } from './fetchFeed';
 
 interface InvidiousData {
   feed: {
