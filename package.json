@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Invidious CLI",
   "main": "dist/index.js",
+  "bin": {
+    "invidious": "dist/index.js"
+  },
   "scripts": {
     "start": "node dist/index.js",
     "build": "node_modules/.bin/rollup --banner '#!/usr/bin/env node' -c"
@@ -45,8 +48,10 @@
     "core-js": "^3.2.1",
     "react": "^16.9.0",
     "react-blessed": "^0.6.1",
+    "react-devtools-core": "^3.6.3",
     "regenerator-runtime": "^0.13.3",
     "simple-cache-provider": "^0.10.0",
+    "ws": "^7.1.2",
     "xml2js": "^0.4.21"
   }
 }
