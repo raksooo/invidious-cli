@@ -10,8 +10,7 @@ program
 
 program
   .command('set <option> <value>')
-  .usage('set player <command>')
-  .usage('set feed <url>')
+  .usage('set <key> <value>, where key is "player" or "feed"')
   .action((option, value) => {
     setProvided = true;
     option == 'player' && savePlayer(value);
