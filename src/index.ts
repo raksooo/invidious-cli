@@ -1,6 +1,7 @@
 import program from 'commander';
 import run from './setup';
-import { readConfig, savePlayer, saveFeed } from './config';
+import { readConfig, savePlayer, saveFeed, Config } from './config';
+import {config} from 'process';
 
 let setProvided = false;
 
@@ -24,7 +25,20 @@ if (!setProvided) {
   readConfig()
     .then(config => {
       config.player = program.args[0] || config.player;
-      run(config);
+      if (setupComplete(config)) {
+        run(config);
+      }
     });
 }
+
+const setupComplete = (config: Config) => {
+  if (!config.player) {
+    console.log('No player configured.');
+  }
+  if (!config.feed) {
+    console.log('No feed configured.');
+  }
+
+  return config.player && config.feed;
+};
 
