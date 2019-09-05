@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import CenteredText from './CenteredText';
 
 const generateLoadingText = (elapsedSeconds: number) => {
   const maxDots = 3;
@@ -21,13 +22,7 @@ const Loading: React.FC = () => {
   });
 
   return (
-    <box
-      top="50%-2"
-      left="center"
-      width={loadingText.length}
-      height={1}>
-      {loadingText}
-    </box>
+    <CenteredText text={loadingText} />
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { VideoData } from '../helpers/fetchFeed';
+import CenteredText from './CenteredText';
 
 interface FetcherProps {
   fallback: React.ReactElement;
@@ -22,10 +23,13 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
   } = props;
 
   const [data, setData] = useState(null);
+  const [error, setError] = useState<boolean>(false);
 
   const fetchImpl = useCallback(() => {
     setData(null);
-    fetch().then(setData);
+    fetch()
+      .then(setData)
+      .catch(_ => setError(true));
   }, [fetch])
 
   const value = useMemo(() => ({
@@ -33,7 +37,13 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
     refetch: fetchImpl
   }), [data, fetchImpl]);
 
-  useEffect(() => fetchImpl, [fetchImpl]);
+  useEffect(fetchImpl, [fetchImpl]);
+
+  if (error != null) {
+    return (
+      <CenteredText text="An error occured." />
+    );
+  }
 
   if (data == null) {
     return fallback;
