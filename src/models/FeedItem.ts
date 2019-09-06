@@ -3,6 +3,7 @@ import { VideoData } from '../helpers/fetchFeed';
 export class FeedItem implements VideoData {
   private readonly data: VideoData;
 
+  public readonly id: string;
   public readonly title: string;
   public readonly link: string;
   public readonly author: string;
@@ -12,6 +13,7 @@ export class FeedItem implements VideoData {
 
   constructor(data: VideoData, selected: boolean = false) {
     this.data = data;
+    this.id = data.id;
     this.title = data.title;
     this.link = data.link;
     this.author = data.author;

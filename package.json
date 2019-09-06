@@ -46,6 +46,7 @@
     "clipboardy": "^2.1.0",
     "commander": "^3.0.1",
     "core-js": "^3.2.1",
+    "date-difference": "^1.0.0",
     "react": "^16.9.0",
     "react-blessed": "^0.6.1",
     "react-devtools-core": "^3.6.3",

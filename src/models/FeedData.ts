@@ -15,7 +15,7 @@ export class FeedData {
   }
 
   public setIndex(index: number) {
-    this.index = index;
+    return new FeedData(this.data, index);
   }
 
   public select() {

@@ -1,21 +1,25 @@
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import clipboardy from 'clipboardy';
-import { FetcherContext} from './Fetcher';
-import {ConfigContext} from './App';
-import {playVideos} from '../helpers/player';
-import {FeedData} from '../models/FeedData';
+import { FetcherContext } from './Fetcher';
+import { ConfigContext } from './App';
+import { playVideos } from '../helpers/player';
+import { FeedData } from '../models/FeedData';
 import InfoLine from './InfoLine';
+import { useToggle } from '../helpers/toggleHook';
+import InfoDialog from './InfoDialog';
 
 const Feed: React.FC = () => {
   const { player, last, setLast } = useContext(ConfigContext);
-  const { videos, refetch } = useContext(FetcherContext);
+  const { data: videos, refetch } = useContext(FetcherContext);
   const [feed, setFeed] = useState(() => FeedData.fromVideoData(videos));
+  const [showInfo, toggleShowInfo] = useToggle();
   const [output, setOutput] = useState<string>(null);
 
   const actions = {
     ' ': () => setFeed(feed.select()),
     'n': () => updateLast(new Date()),
     'r': () => refetch(),
+    'i': () => toggleShowInfo(),
     'y': () => clipboardy.writeSync(feed.current.link),
     'o': () => playVideos(player, [feed.current], setOutput),
     'p': () => {
@@ -24,7 +28,7 @@ const Feed: React.FC = () => {
     },
   };
 
-  const onSelectItem = useCallback((_, i) => feed.setIndex(i), [feed]);
+  const onSelectItem = useCallback((_, i) => setFeed(feed.setIndex(i)), [feed]);
   const updateLast = useCallback(date => date > last && setLast(date), [last, setLast]);
   const onKey = useCallback(key => actions[key] && actions[key](), [feed, updateLast]);
 
@@ -32,6 +36,7 @@ const Feed: React.FC = () => {
 
   return (
     <element>
+      {showInfo && (<InfoDialog video={feed.current} />)}
       <list
         onSelectItem={onSelectItem}
         onKeypress={onKey}

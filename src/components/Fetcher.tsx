@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { VideoData } from '../helpers/fetchFeed';
 import CenteredText from './CenteredText';
 
 interface FetcherProps {
@@ -9,7 +8,7 @@ interface FetcherProps {
 }
 
 export interface FetcherContextValue {
-  videos: VideoData[];
+  data: any;
   refetch: () => void;
 }
 
@@ -33,7 +32,7 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
   }, [fetch])
 
   const value = useMemo(() => ({
-    videos: data,
+    data,
     refetch: fetchImpl
   }), [data, fetchImpl]);
 
