@@ -34,6 +34,8 @@ Commands:
       p: Play selected videos
       o: Play video on active row without setting is as last watched video
       n: Set last watched to current date and time
+      i: Open info dialog for active row
+      y: Add url of current row to clipboard
       r: Fetch videos
       q: Quit
 ```
