@@ -39,7 +39,7 @@ const Fetcher: React.FC<FetcherProps> = (props) => {
 
   useEffect(fetchImpl, [fetchImpl]);
 
-  if (error != null) {
+  if (error) {
     return (
       <CenteredText text="An error occured." />
     );
