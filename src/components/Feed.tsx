@@ -24,7 +24,7 @@ const Feed: React.FC = () => {
     'o': () => playVideos(player, [feed.current], setOutput),
     'p': () => {
       updateLast(feed.lastDateOfSelected);
-      playVideos(player, feed.selected, setOutput);
+      playVideos(player, feed.selected.reverse(), setOutput);
     },
   };
 
