@@ -29,7 +29,9 @@ const Feed: React.FC = () => {
   };
 
   const onSelectItem = useCallback((_, i) => setFeed(feed.setIndex(i)), [feed]);
-  const updateLast = useCallback(date => date > last && setLast(date), [last, setLast]);
+  const updateLast = useCallback(date => {
+    setLast(new Date(Math.max(date.getTime(), last.getTime())));
+  }, [last, setLast]);
   const onKey = useCallback(key => actions[key] && actions[key](), [feed, updateLast]);
 
   useEffect(() => { setFeed(feed => feed.selectMoreRecent(last)); }, [last]);
